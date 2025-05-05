@@ -1,3 +1,19 @@
+# Habit Tracker
+
+A React-based habit tracking application that helps you track daily habits, fitness activities, and daily metrics.
+
+## Features
+
+- Daily habit tracking
+- Fitness activity logging
+- Daily metrics (sleep, calories, energy levels)
+- Weekly and overall progress summaries
+- Data export functionality
+
+## Live Demo
+
+Visit the live application at: https://enley714.github.io/habit-tracker
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
