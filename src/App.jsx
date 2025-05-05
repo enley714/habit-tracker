@@ -9,7 +9,7 @@ import ActivityChart from './components/ActivityChart';
 import SummaryDialog from './components/SummaryDialog';
 import FitnessTracker from './components/FitnessTracker';
 import DailyMetrics from './components/DailyMetrics';
-import { CHALLENGE_START_DATE } from './constants/habits';
+import { CHALLENGE_START_DATE, CHALLENGE_END_DATE } from './constants/habits';
 import { getDayProgress } from './utils/storage';
 
 const darkTheme = createTheme({
@@ -24,8 +24,8 @@ const darkTheme = createTheme({
       main: '#EC4899', // Pink
     },
     background: {
-      default: '#0F172A', // Dark blue
-      paper: '#1E293B', // Slightly lighter blue
+      default: '#1e1c1c',
+      paper: '#1e1c1c',
     },
     text: {
       primary: '#F8FAFC', // Light gray
@@ -33,6 +33,15 @@ const darkTheme = createTheme({
     },
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          margin: 0,
+          padding: 0,
+          backgroundColor: '#1e1c1c',
+        },
+      },
+    },
     MuiPaper: {
       styleOverrides: {
         root: {
@@ -63,7 +72,7 @@ const darkTheme = createTheme({
 });
 
 function App() {
-  const [selectedDate, setSelectedDate] = useState(parseISO(CHALLENGE_START_DATE));
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [updateTrigger, setUpdateTrigger] = useState(0);
 
@@ -83,60 +92,62 @@ function App() {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <Container maxWidth="lg" sx={{ px: 4 }}>
-          <Box sx={{ my: 4 }}>
-            <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ 
-              fontWeight: 600,
-              textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
-            }}>
-              Day {dayNumber}
-            </Typography>
-            <DatePicker
-              label="Select Date"
-              value={selectedDate}
-              onChange={handleDateChange}
-              sx={{ 
-                mb: 2, 
-                width: '100%',
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
-                }
-              }}
-              format="MMMM, d"
-            />
-            <ActivityChart 
-              onDateSelect={handleDateChange} 
-              selectedDate={selectedDate}
-              updateTrigger={updateTrigger}
-            />
-            <HabitList 
-              selectedDate={selectedDate} 
-              onHabitUpdate={handleHabitUpdate}
-            />
+        <Box sx={{ 
+          minHeight: '100vh',
+          backgroundColor: '#1e1c1c',
+          color: 'white',
+          margin: 0,
+          padding: 0,
+          overflow: 'hidden'
+        }}>
+          <Container maxWidth="md" sx={{ py: 4 }}>
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h4" component="h1" gutterBottom>
+                Habit Tracker
+              </Typography>
+              <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+                Track your daily habits from {CHALLENGE_START_DATE} to {CHALLENGE_END_DATE}
+              </Typography>
+            </Box>
+
+            <Box sx={{ mb: 3 }}>
+              <DatePicker
+                label="Select Date"
+                value={selectedDate}
+                onChange={handleDateChange}
+                minDate={parseISO(CHALLENGE_START_DATE)}
+                maxDate={parseISO(CHALLENGE_END_DATE)}
+                sx={{ 
+                  width: '100%',
+                  '& .MuiInputBase-root': {
+                    backgroundColor: 'white'
+                  }
+                }}
+              />
+            </Box>
+
+            <ActivityChart />
+            <HabitList selectedDate={selectedDate} />
             <DailyMetrics selectedDate={selectedDate} />
             <FitnessTracker />
-            <Box sx={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
-              mt: 2
-            }}>
-              <Box>
-                <Button 
-                  variant="outlined" 
-                  onClick={() => setSummaryOpen(true)}
-                >
-                  View Summary
-                </Button>
-              </Box>
+
+            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setSummaryOpen(true)}
+              >
+                View Summary
+              </Button>
             </Box>
-            <SummaryDialog 
-              open={summaryOpen} 
-              onClose={() => setSummaryOpen(false)} 
+
+            <SummaryDialog
+              open={summaryOpen}
+              onClose={() => setSummaryOpen(false)}
               selectedDate={selectedDate}
             />
-          </Box>
-        </Container>
+          </Container>
+        </Box>
       </LocalizationProvider>
     </ThemeProvider>
   );
